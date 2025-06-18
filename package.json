@@ -1,21 +1,38 @@
 {
   "name": "claude-beep",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A wrapper for Claude Code that plays a beep sound when tasks complete",
+  "main": "dist/index.js",
+  "bin": {
+    "claude-beep": "dist/index.js"
+  },
   "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "claude",
+    "cli",
+    "beep",
+    "notification",
+    "ai",
+    "coding"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "type": "module",
   "packageManager": "pnpm@10.11.0",
   "dependencies": {
+    "beeper": "^3.0.0",
     "commander": "^14.0.0",
-    "execa": "^9.6.0"
+    "execa": "^9.6.0",
+    "node-notifier": "^10.0.1"
   },
   "devDependencies": {
     "@types/node": "^24.0.3",
+    "@types/node-notifier": "^8.0.5",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }

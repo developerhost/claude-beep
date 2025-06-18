@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "description": "A wrapper for Claude Code that plays a beep sound when tasks complete",
+  "homepage": "https://github.com/your-username/claude-beep",
+  "url": "https://github.com/your-username/claude-beep/releases/download/v1.0.0/claude-beep-1.0.0.tgz",
+  "hash": "HASH_PLACEHOLDER",
+  "license": "MIT",
+  "depends": "nodejs",
+  "bin": "claude-beep",
+  "installer": {
+    "script": ["npm install -g ."]
+  },
+  "uninstaller": {
+    "script": ["npm uninstall -g claude-beep"]
+  }
+}
