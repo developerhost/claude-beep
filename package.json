@@ -13,5 +13,10 @@
   "dependencies": {
     "commander": "^14.0.0",
     "execa": "^9.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
   }
 }
