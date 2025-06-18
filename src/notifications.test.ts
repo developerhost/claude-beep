@@ -1,37 +1,37 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { playBeep, playErrorBeep, showNotification } from "./notifications.js";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { playBeep, playErrorBeep, showNotification } from './notifications.js';
 
 // Mock external dependencies
-vi.mock("beeper", () => ({
+vi.mock('beeper', () => ({
   default: vi.fn(),
 }));
 
-vi.mock("node-notifier", () => ({
+vi.mock('node-notifier', () => ({
   notify: vi.fn(),
 }));
 
-vi.mock("os", () => ({
-  platform: vi.fn(() => "darwin"),
+vi.mock('os', () => ({
+  platform: vi.fn(() => 'darwin'),
 }));
 
-import beeper from "beeper";
-import * as notifier from "node-notifier";
+import beeper from 'beeper';
+import * as notifier from 'node-notifier';
 
-describe("Notifications", () => {
+describe('Notifications', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Mock stdout.write
-    vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+    vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
     // Mock console.log
-    vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  describe("playBeep", () => {
-    it("should call beeper with 3 beeps", async () => {
+  describe('playBeep', () => {
+    it('should call beeper with 3 beeps', async () => {
       const mockedBeeper = vi.mocked(beeper);
       mockedBeeper.mockResolvedValueOnce(undefined);
 
@@ -40,18 +40,18 @@ describe("Notifications", () => {
       expect(mockedBeeper).toHaveBeenCalledWith(3);
     });
 
-    it("should fallback to system beep when beeper fails", async () => {
+    it('should fallback to system beep when beeper fails', async () => {
       const mockedBeeper = vi.mocked(beeper);
-      mockedBeeper.mockRejectedValueOnce(new Error("Beeper failed"));
+      mockedBeeper.mockRejectedValueOnce(new Error('Beeper failed'));
 
       await playBeep();
 
-      expect(process.stdout.write).toHaveBeenCalledWith("\u0007");
+      expect(process.stdout.write).toHaveBeenCalledWith('\u0007');
     });
   });
 
-  describe("playErrorBeep", () => {
-    it("should call beeper with 2 beeps", async () => {
+  describe('playErrorBeep', () => {
+    it('should call beeper with 2 beeps', async () => {
       const mockedBeeper = vi.mocked(beeper);
       mockedBeeper.mockResolvedValueOnce(undefined);
 
@@ -60,25 +60,25 @@ describe("Notifications", () => {
       expect(mockedBeeper).toHaveBeenCalledWith(2);
     });
 
-    it("should fallback to system beep when beeper fails", async () => {
+    it('should fallback to system beep when beeper fails', async () => {
       const mockedBeeper = vi.mocked(beeper);
-      mockedBeeper.mockRejectedValueOnce(new Error("Beeper failed"));
+      mockedBeeper.mockRejectedValueOnce(new Error('Beeper failed'));
 
       await playErrorBeep();
 
-      expect(process.stdout.write).toHaveBeenCalledWith("\u0007");
+      expect(process.stdout.write).toHaveBeenCalledWith('\u0007');
     });
   });
 
-  describe("showNotification", () => {
-    it("should call notifier.notify with correct parameters for success", () => {
+  describe('showNotification', () => {
+    it('should call notifier.notify with correct parameters for success', () => {
       const mockedNotify = vi.mocked(notifier.notify);
 
-      showNotification("Test message");
+      showNotification('Test message');
 
       expect(mockedNotify).toHaveBeenCalledWith({
-        title: "Claude Code",
-        message: "Test message",
+        title: 'Claude Code',
+        message: 'Test message',
         icon: undefined,
         sound: false,
         timeout: 5,
@@ -86,14 +86,14 @@ describe("Notifications", () => {
       });
     });
 
-    it("should call notifier.notify with error flag", () => {
+    it('should call notifier.notify with error flag', () => {
       const mockedNotify = vi.mocked(notifier.notify);
 
-      showNotification("Error message", true);
+      showNotification('Error message', true);
 
       expect(mockedNotify).toHaveBeenCalledWith({
-        title: "Claude Code",
-        message: "Error message",
+        title: 'Claude Code',
+        message: 'Error message',
         icon: undefined,
         sound: false,
         timeout: 5,
@@ -101,16 +101,16 @@ describe("Notifications", () => {
       });
     });
 
-    it("should fallback to console.log when notifier fails", () => {
+    it('should fallback to console.log when notifier fails', () => {
       const mockedNotify = vi.mocked(notifier.notify);
       mockedNotify.mockImplementationOnce(() => {
-        throw new Error("Notification failed");
+        throw new Error('Notification failed');
       });
 
-      showNotification("Test message");
+      showNotification('Test message');
 
       expect(console.log).toHaveBeenCalledWith(
-        "(Notification would show: Test message)"
+        '(Notification would show: Test message)'
       );
     });
   });

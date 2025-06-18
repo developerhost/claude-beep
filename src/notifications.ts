@@ -1,14 +1,13 @@
-import beeper from "beeper";
-import * as notifier from "node-notifier";
-import { platform } from "os";
+import beeper from 'beeper';
+import * as notifier from 'node-notifier';
 
 export async function playBeep() {
   try {
     // Play a pleasant completion sound
     await beeper(3); // 3 short beeps
-  } catch (error) {
+  } catch {
     // Fallback to system beep if beeper fails
-    process.stdout.write("\u0007");
+    process.stdout.write('\u0007');
   }
 }
 
@@ -16,25 +15,23 @@ export async function playErrorBeep() {
   try {
     // Play a different pattern for errors
     await beeper(2); // 2 short beeps for error
-  } catch (error) {
+  } catch {
     // Fallback to system beep
-    process.stdout.write("\u0007");
+    process.stdout.write('\u0007');
   }
 }
 
 export function showNotification(message: string, isError: boolean = false) {
-  const currentPlatform = platform();
-
   try {
     notifier.notify({
-      title: "Claude Code",
+      title: 'Claude Code',
       message: message,
       icon: isError ? undefined : undefined, // Could add custom icons later
       sound: false, // We handle sound separately
       timeout: 5,
       wait: false,
     });
-  } catch (error) {
+  } catch {
     // Notifications are optional, don't fail if they don't work
     console.log(`(Notification would show: ${message})`);
   }
