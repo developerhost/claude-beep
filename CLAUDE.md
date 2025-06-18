@@ -20,6 +20,18 @@ pnpm dev
 
 # Test the built binary
 node dist/index.js --help
+
+# Run tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with UI
+pnpm test:ui
+
+# Run tests with coverage report
+pnpm test:coverage
 ```
 
 ## Architecture
