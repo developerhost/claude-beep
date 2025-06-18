@@ -32,6 +32,24 @@ pnpm test:ui
 
 # Run tests with coverage report
 pnpm test:coverage
+
+# Lint code
+pnpm lint
+
+# Lint and fix automatically fixable issues
+pnpm lint:fix
+
+# Format code with Prettier
+pnpm format
+
+# Check if code is properly formatted
+pnpm format:check
+
+# Type check without building
+pnpm typecheck
+
+# Run CI checks (typecheck + lint + test)
+pnpm ci
 ```
 
 ## Architecture
