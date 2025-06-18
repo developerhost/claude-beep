@@ -1,5 +1,5 @@
-import { execa } from "execa";
-import { playBeep, playErrorBeep, showNotification } from "./notifications.js";
+import { execa } from 'execa';
+import { playBeep, playErrorBeep, showNotification } from './notifications.js';
 
 export interface RunOptions {
   silent?: boolean;
@@ -11,17 +11,17 @@ export async function runClaude(
   options: RunOptions = {}
 ) {
   try {
-    console.log("Starting Claude Code...");
+    console.log('Starting Claude Code...');
 
-    const subprocess = execa("claude", claudeArgs, {
-      stdio: "inherit",
+    const subprocess = execa('claude', claudeArgs, {
+      stdio: 'inherit',
       shell: true,
     });
 
     const result = await subprocess;
 
     // Claude completed successfully
-    console.log("\n✅ Claude Code task completed!");
+    console.log('\n✅ Claude Code task completed!');
 
     // Play beep unless silenced
     if (!options.silent) {
@@ -30,12 +30,12 @@ export async function runClaude(
 
     // Show notification unless disabled
     if (options.notification !== false) {
-      showNotification("Claude Code task completed successfully!");
+      showNotification('Claude Code task completed successfully!');
     }
 
     return result.exitCode || 0;
-  } catch (error: any) {
-    console.error("\n❌ Claude Code encountered an error");
+  } catch (error: unknown) {
+    console.error('\n❌ Claude Code encountered an error');
 
     // Play different beep for error
     if (!options.silent) {
@@ -44,7 +44,7 @@ export async function runClaude(
 
     // Show error notification unless disabled
     if (options.notification !== false) {
-      showNotification("Claude Code task failed", true);
+      showNotification('Claude Code task failed', true);
     }
 
     throw error;
