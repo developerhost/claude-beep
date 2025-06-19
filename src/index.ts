@@ -85,24 +85,38 @@ async function playBeep() {
       const currentPlatform = platform();
 
       if (currentPlatform === 'darwin') {
-        // macOS: use system sound
-        await new Promise<void>(resolve => {
-          exec('afplay /System/Library/Sounds/Glass.aiff', error => {
-            if (error) {
-              console.log('⚠️ System sound failed, trying beeper...');
-              beeper(3)
-                .then(resolve)
-                .catch(() => {
-                  process.stdout.write('\u0007');
-                  resolve();
-                });
-            } else {
+        // macOS: use osascript beep command
+        console.log('🍎 macOS detected, using osascript beep...');
+        for (let i = 0; i < 3; i++) {
+          await new Promise<void>(resolve => {
+            exec('osascript -e "beep"', error => {
+              if (error) {
+                console.log('⚠️ osascript beep failed, using fallback...');
+                process.stdout.write('\u0007');
+              }
               resolve();
-            }
+            });
           });
-        });
+          if (i < 2) await new Promise(resolve => setTimeout(resolve, 200));
+        }
+      } else if (currentPlatform === 'win32') {
+        // Windows: use PowerShell Console beep
+        console.log('🪟 Windows detected, using PowerShell beep...');
+        for (let i = 0; i < 3; i++) {
+          await new Promise<void>(resolve => {
+            exec('powershell -Command "[Console]::Beep(800, 200)"', error => {
+              if (error) {
+                console.log('⚠️ PowerShell beep failed, trying beeper...');
+                beeper(1).catch(() => process.stdout.write('\u0007'));
+              }
+              resolve();
+            });
+          });
+          if (i < 2) await new Promise(resolve => setTimeout(resolve, 200));
+        }
       } else {
         // Other platforms: use beeper
+        console.log('🐧 Linux/Other detected, using beeper...');
         await beeper(3);
       }
     }
@@ -133,24 +147,38 @@ async function playErrorBeep() {
       const currentPlatform = platform();
 
       if (currentPlatform === 'darwin') {
-        // macOS: use system error sound
-        await new Promise<void>(resolve => {
-          exec('afplay /System/Library/Sounds/Sosumi.aiff', error => {
-            if (error) {
-              console.log('⚠️ System sound failed, trying beeper...');
-              beeper(2)
-                .then(resolve)
-                .catch(() => {
-                  process.stdout.write('\u0007');
-                  resolve();
-                });
-            } else {
+        // macOS: use osascript beep command
+        console.log('🍎 macOS detected, using osascript beep...');
+        for (let i = 0; i < 2; i++) {
+          await new Promise<void>(resolve => {
+            exec('osascript -e "beep"', error => {
+              if (error) {
+                console.log('⚠️ osascript beep failed, using fallback...');
+                process.stdout.write('\u0007');
+              }
               resolve();
-            }
+            });
           });
-        });
+          if (i < 1) await new Promise(resolve => setTimeout(resolve, 300));
+        }
+      } else if (currentPlatform === 'win32') {
+        // Windows: use PowerShell Console beep with higher pitch for error
+        console.log('🪟 Windows detected, using PowerShell beep...');
+        for (let i = 0; i < 2; i++) {
+          await new Promise<void>(resolve => {
+            exec('powershell -Command "[Console]::Beep(1000, 300)"', error => {
+              if (error) {
+                console.log('⚠️ PowerShell beep failed, trying beeper...');
+                beeper(1).catch(() => process.stdout.write('\u0007'));
+              }
+              resolve();
+            });
+          });
+          if (i < 1) await new Promise(resolve => setTimeout(resolve, 300));
+        }
       } else {
         // Other platforms: use beeper
+        console.log('🐧 Linux/Other detected, using beeper...');
         await beeper(2);
       }
     }

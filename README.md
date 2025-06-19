@@ -8,6 +8,8 @@ A wrapper for Claude Code that plays a beep sound when tasks complete, with cros
 - 🖥️ Desktop notifications (optional)
 - 🌍 Cross-platform support (Mac, Windows, Linux)
 - 📟 VSCode integrated terminal support
+- 🍎 Native macOS beep via `osascript -e "beep"`
+- 🪟 Native Windows beep via PowerShell `[Console]::Beep()`
 - ⚙️ Configurable options (silent mode, no notifications)
 - 🎵 Different sounds for success and error states
 
@@ -69,6 +71,8 @@ For VSCode users, enable terminal bell in settings:
 ```
 
 See [VSCode Setup Guide](docs/VSCODE_SETUP.md) for detailed instructions.
+
+For more details on platform-specific sound implementations, see [Platform Sounds Guide](docs/PLATFORM_SOUNDS.md).
 
 ## Development
 

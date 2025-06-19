@@ -8,8 +8,9 @@ Claude Beep is a TypeScript-based CLI wrapper for Claude Code that adds beep not
 
 ### Terminal Support
 - **VSCode**: Automatically detects VSCode terminal via `TERM_PROGRAM` env var and uses terminal bell (`\u0007`)
-- **macOS**: Uses system sounds (Glass.aiff for success, Sosumi.aiff for errors)
-- **Other platforms**: Uses the `beeper` library with fallback to terminal bell
+- **macOS**: Uses native `osascript -e "beep"` command for system beep
+- **Windows**: Uses PowerShell `[Console]::Beep()` with different frequencies for success/error
+- **Linux/Other**: Uses the `beeper` library with fallback to terminal bell
 
 ## Common Commands
 

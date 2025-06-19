@@ -11,11 +11,17 @@ vi.mock('node-notifier', () => ({
 }));
 
 vi.mock('os', () => ({
-  platform: vi.fn(() => 'darwin'),
+  platform: vi.fn(() => 'linux'), // Use linux to test beeper path
+}));
+
+vi.mock('child_process', () => ({
+  exec: vi.fn(),
 }));
 
 import beeper from 'beeper';
 import * as notifier from 'node-notifier';
+import { exec } from 'child_process';
+import { platform } from 'os';
 
 describe('Notifications', () => {
   beforeEach(() => {
@@ -31,8 +37,10 @@ describe('Notifications', () => {
   });
 
   describe('playBeep', () => {
-    it('should call beeper with 3 beeps', async () => {
+    it('should call beeper with 3 beeps on Linux', async () => {
       const mockedBeeper = vi.mocked(beeper);
+      const mockedPlatform = vi.mocked(platform);
+      mockedPlatform.mockReturnValue('linux');
       mockedBeeper.mockResolvedValueOnce(undefined);
 
       await playBeep();
@@ -40,8 +48,50 @@ describe('Notifications', () => {
       expect(mockedBeeper).toHaveBeenCalledWith(3);
     });
 
+    it('should use osascript on macOS', async () => {
+      const mockedExec = vi.mocked(exec);
+      const mockedPlatform = vi.mocked(platform);
+      mockedPlatform.mockReturnValue('darwin');
+
+      // Mock exec to call callback immediately
+      mockedExec.mockImplementation((...args: any[]) => {
+        const callback = args[args.length - 1];
+        if (typeof callback === 'function') callback(null, '', '');
+        return {} as any;
+      });
+
+      await playBeep();
+
+      expect(mockedExec).toHaveBeenCalledWith(
+        'osascript -e "beep"',
+        expect.any(Function)
+      );
+    });
+
+    it('should use PowerShell on Windows', async () => {
+      const mockedExec = vi.mocked(exec);
+      const mockedPlatform = vi.mocked(platform);
+      mockedPlatform.mockReturnValue('win32');
+
+      // Mock exec to call callback immediately
+      mockedExec.mockImplementation((...args: any[]) => {
+        const callback = args[args.length - 1];
+        if (typeof callback === 'function') callback(null, '', '');
+        return {} as any;
+      });
+
+      await playBeep();
+
+      expect(mockedExec).toHaveBeenCalledWith(
+        'powershell -Command "[Console]::Beep(800, 200)"',
+        expect.any(Function)
+      );
+    });
+
     it('should fallback to system beep when beeper fails', async () => {
       const mockedBeeper = vi.mocked(beeper);
+      const mockedPlatform = vi.mocked(platform);
+      mockedPlatform.mockReturnValue('linux');
       mockedBeeper.mockRejectedValueOnce(new Error('Beeper failed'));
 
       await playBeep();
@@ -51,8 +101,10 @@ describe('Notifications', () => {
   });
 
   describe('playErrorBeep', () => {
-    it('should call beeper with 2 beeps', async () => {
+    it('should call beeper with 2 beeps on Linux', async () => {
       const mockedBeeper = vi.mocked(beeper);
+      const mockedPlatform = vi.mocked(platform);
+      mockedPlatform.mockReturnValue('linux');
       mockedBeeper.mockResolvedValueOnce(undefined);
 
       await playErrorBeep();
@@ -60,8 +112,50 @@ describe('Notifications', () => {
       expect(mockedBeeper).toHaveBeenCalledWith(2);
     });
 
+    it('should use osascript on macOS for errors', async () => {
+      const mockedExec = vi.mocked(exec);
+      const mockedPlatform = vi.mocked(platform);
+      mockedPlatform.mockReturnValue('darwin');
+
+      // Mock exec to call callback immediately
+      mockedExec.mockImplementation((...args: any[]) => {
+        const callback = args[args.length - 1];
+        if (typeof callback === 'function') callback(null, '', '');
+        return {} as any;
+      });
+
+      await playErrorBeep();
+
+      expect(mockedExec).toHaveBeenCalledWith(
+        'osascript -e "beep"',
+        expect.any(Function)
+      );
+    });
+
+    it('should use PowerShell on Windows for errors', async () => {
+      const mockedExec = vi.mocked(exec);
+      const mockedPlatform = vi.mocked(platform);
+      mockedPlatform.mockReturnValue('win32');
+
+      // Mock exec to call callback immediately
+      mockedExec.mockImplementation((...args: any[]) => {
+        const callback = args[args.length - 1];
+        if (typeof callback === 'function') callback(null, '', '');
+        return {} as any;
+      });
+
+      await playErrorBeep();
+
+      expect(mockedExec).toHaveBeenCalledWith(
+        'powershell -Command "[Console]::Beep(1000, 300)"',
+        expect.any(Function)
+      );
+    });
+
     it('should fallback to system beep when beeper fails', async () => {
       const mockedBeeper = vi.mocked(beeper);
+      const mockedPlatform = vi.mocked(platform);
+      mockedPlatform.mockReturnValue('linux');
       mockedBeeper.mockRejectedValueOnce(new Error('Beeper failed'));
 
       await playErrorBeep();
