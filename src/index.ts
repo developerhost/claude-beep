@@ -4,6 +4,8 @@ import { Command } from 'commander';
 import { execa } from 'execa';
 import beeper from 'beeper';
 import * as notifier from 'node-notifier';
+import { exec } from 'child_process';
+import { platform } from 'os';
 
 const program = new Command();
 
@@ -34,7 +36,7 @@ async function runClaude() {
     const result = await subprocess;
 
     // Claude completed successfully
-    console.log('\n Claude Code task completed!');
+    console.log('\n✅ Claude Code task completed!');
 
     // Play beep unless silenced
     if (!options.silent) {
@@ -48,7 +50,7 @@ async function runClaude() {
 
     process.exit(result.exitCode || 0);
   } catch (error: unknown) {
-    console.error('\nL Claude Code encountered an error');
+    console.error('\n❌ Claude Code encountered an error');
 
     // Play different beep for error
     if (!options.silent) {
@@ -66,9 +68,25 @@ async function runClaude() {
 
 async function playBeep() {
   try {
-    // Play a pleasant completion sound
-    await beeper(3); // 3 short beeps
-  } catch {
+    console.log('🔔 Playing success beep...');
+    // Try different approaches based on platform
+    const currentPlatform = platform();
+
+    if (currentPlatform === 'darwin') {
+      // macOS: use system sound
+      exec('afplay /System/Library/Sounds/Glass.aiff', error => {
+        if (error) {
+          console.log('⚠️ System sound failed, trying beeper...');
+          beeper(3).catch(() => process.stdout.write('\u0007'));
+        }
+      });
+    } else {
+      // Other platforms: use beeper
+      await beeper(3);
+    }
+    console.log('✅ Beep completed');
+  } catch (error) {
+    console.log('⚠️ Beeper failed, using system beep', error);
     // Fallback to system beep if beeper fails
     process.stdout.write('\u0007');
   }
@@ -76,9 +94,25 @@ async function playBeep() {
 
 async function playErrorBeep() {
   try {
-    // Play a different pattern for errors
-    await beeper(2); // 2 short beeps for error
-  } catch {
+    console.log('🔴 Playing error beep...');
+    // Try different approaches based on platform
+    const currentPlatform = platform();
+
+    if (currentPlatform === 'darwin') {
+      // macOS: use system error sound
+      exec('afplay /System/Library/Sounds/Sosumi.aiff', error => {
+        if (error) {
+          console.log('⚠️ System sound failed, trying beeper...');
+          beeper(2).catch(() => process.stdout.write('\u0007'));
+        }
+      });
+    } else {
+      // Other platforms: use beeper
+      await beeper(2);
+    }
+    console.log('🔴 Error beep completed');
+  } catch (error) {
+    console.log('⚠️ Beeper failed, using system beep', error);
     // Fallback to system beep
     process.stdout.write('\u0007');
   }
