@@ -69,24 +69,46 @@ async function runClaude() {
 async function playBeep() {
   try {
     console.log('🔔 Playing success beep...');
-    // Try different approaches based on platform
-    const currentPlatform = platform();
 
-    if (currentPlatform === 'darwin') {
-      // macOS: use system sound
-      exec('afplay /System/Library/Sounds/Glass.aiff', error => {
-        if (error) {
-          console.log('⚠️ System sound failed, trying beeper...');
-          beeper(3).catch(() => process.stdout.write('\u0007'));
-        }
-      });
+    // Check if running in VSCode terminal
+    const isVSCode = process.env.TERM_PROGRAM === 'vscode';
+
+    if (isVSCode) {
+      // VSCode terminal: use terminal bell multiple times for emphasis
+      console.log('📟 VSCode detected, using terminal bell...');
+      for (let i = 0; i < 3; i++) {
+        process.stdout.write('\u0007');
+        await new Promise(resolve => setTimeout(resolve, 200)); // Small delay between beeps
+      }
     } else {
-      // Other platforms: use beeper
-      await beeper(3);
+      // Try different approaches based on platform
+      const currentPlatform = platform();
+
+      if (currentPlatform === 'darwin') {
+        // macOS: use system sound
+        await new Promise<void>(resolve => {
+          exec('afplay /System/Library/Sounds/Glass.aiff', error => {
+            if (error) {
+              console.log('⚠️ System sound failed, trying beeper...');
+              beeper(3)
+                .then(resolve)
+                .catch(() => {
+                  process.stdout.write('\u0007');
+                  resolve();
+                });
+            } else {
+              resolve();
+            }
+          });
+        });
+      } else {
+        // Other platforms: use beeper
+        await beeper(3);
+      }
     }
     console.log('✅ Beep completed');
-  } catch (error) {
-    console.log('⚠️ Beeper failed, using system beep', error);
+  } catch {
+    console.log('⚠️ Beeper failed, using system beep');
     // Fallback to system beep if beeper fails
     process.stdout.write('\u0007');
   }
@@ -95,24 +117,46 @@ async function playBeep() {
 async function playErrorBeep() {
   try {
     console.log('🔴 Playing error beep...');
-    // Try different approaches based on platform
-    const currentPlatform = platform();
 
-    if (currentPlatform === 'darwin') {
-      // macOS: use system error sound
-      exec('afplay /System/Library/Sounds/Sosumi.aiff', error => {
-        if (error) {
-          console.log('⚠️ System sound failed, trying beeper...');
-          beeper(2).catch(() => process.stdout.write('\u0007'));
-        }
-      });
+    // Check if running in VSCode terminal
+    const isVSCode = process.env.TERM_PROGRAM === 'vscode';
+
+    if (isVSCode) {
+      // VSCode terminal: use terminal bell multiple times for emphasis
+      console.log('📟 VSCode detected, using terminal bell...');
+      for (let i = 0; i < 2; i++) {
+        process.stdout.write('\u0007');
+        await new Promise(resolve => setTimeout(resolve, 300)); // Longer delay for error
+      }
     } else {
-      // Other platforms: use beeper
-      await beeper(2);
+      // Try different approaches based on platform
+      const currentPlatform = platform();
+
+      if (currentPlatform === 'darwin') {
+        // macOS: use system error sound
+        await new Promise<void>(resolve => {
+          exec('afplay /System/Library/Sounds/Sosumi.aiff', error => {
+            if (error) {
+              console.log('⚠️ System sound failed, trying beeper...');
+              beeper(2)
+                .then(resolve)
+                .catch(() => {
+                  process.stdout.write('\u0007');
+                  resolve();
+                });
+            } else {
+              resolve();
+            }
+          });
+        });
+      } else {
+        // Other platforms: use beeper
+        await beeper(2);
+      }
     }
     console.log('🔴 Error beep completed');
-  } catch (error) {
-    console.log('⚠️ Beeper failed, using system beep', error);
+  } catch {
+    console.log('⚠️ Beeper failed, using system beep');
     // Fallback to system beep
     process.stdout.write('\u0007');
   }

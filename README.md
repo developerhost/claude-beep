@@ -7,6 +7,7 @@ A wrapper for Claude Code that plays a beep sound when tasks complete, with cros
 - 🔔 Plays beep sound when Claude Code tasks complete
 - 🖥️ Desktop notifications (optional)
 - 🌍 Cross-platform support (Mac, Windows, Linux)
+- 📟 VSCode integrated terminal support
 - ⚙️ Configurable options (silent mode, no notifications)
 - 🎵 Different sounds for success and error states
 
@@ -56,6 +57,18 @@ claude-beep --no-notification
 
 - Node.js 16 or higher
 - Claude Code must be installed and available in PATH
+
+## VSCode Setup
+
+For VSCode users, enable terminal bell in settings:
+
+```json
+{
+  "terminal.integrated.enableBell": true
+}
+```
+
+See [VSCode Setup Guide](docs/VSCODE_SETUP.md) for detailed instructions.
 
 ## Development
 

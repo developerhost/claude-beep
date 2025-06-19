@@ -6,6 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Claude Beep is a TypeScript-based CLI wrapper for Claude Code that adds beep notifications when tasks complete. It acts as a proxy, passing all arguments to the underlying `claude` command while adding audio and visual feedback capabilities.
 
+### Terminal Support
+- **VSCode**: Automatically detects VSCode terminal via `TERM_PROGRAM` env var and uses terminal bell (`\u0007`)
+- **macOS**: Uses system sounds (Glass.aiff for success, Sosumi.aiff for errors)
+- **Other platforms**: Uses the `beeper` library with fallback to terminal bell
+
 ## Common Commands
 
 ```bash
